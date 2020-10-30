@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>KityMinder Editor - Powered By FEX</title>
+
+	<link href="favicon.ico" type="image/x-icon" rel="shortcut icon">
+
+	<!-- bower:css -->
+	<link rel="stylesheet" href="/static/baidumindmap/bootstrap/dist/css/bootstrap.css" />
+	<link rel="stylesheet" href="/static/baidumindmap/codemirror/lib/codemirror.css" />
+	<link rel="stylesheet" href="/static/baidumindmap/hotbox/hotbox.css" />
+	<link rel="stylesheet" href="/static/baidumindmap/kityminder-core/dist/kityminder.core.css" />
+	<link rel="stylesheet" href="/static/baidumindmap/color-picker/dist/color-picker.min.css" />
+	<!-- endbower -->
+
+	<link rel="stylesheet" href="/static/baidumindmap/kityminder.editor.min.css">
+    <style>
+        html, body {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			overflow: hidden;
+		}
+		h1.editor-title {
+			background: #393F4F;
+			color: white;
+			margin: 0;
+			height: 40px;
+			font-size: 14px;
+			line-height: 40px;
+			font-family: 'Hiragino Sans GB', 'Arial', 'Microsoft Yahei';
+			font-weight: normal;
+			padding: 0 20px;
+		}
+		div.minder-editor-container {
+			position: absolute;
+			top: 40px;
+			bottom: 0;
+			left: 0;
+			right: 0;
+		}
+    </style>
+</head>
+<body ng-app="kityminderDemo" ng-controller="MainController" ng-init="">
+<h1 class="editor-title">KityMinder Editor - Powered By FEX</h1>
+<kityminder-editor on-init="initEditor(editor, minder)"></kityminder-editor>
+</body>
+
+<!-- bower:js -->
+<script src="/static/baidumindmap/jquery/dist/jquery.js"></script>
+<script src="/static/baidumindmap/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/static/baidumindmap/angular/angular.js"></script>
+<script src="/static/baidumindmap/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="/static/baidumindmap/codemirror/lib/codemirror.js"></script>
+<script src="/static/baidumindmap/codemirror/mode/xml/xml.js"></script>
+<script src="/static/baidumindmap/codemirror/mode/javascript/javascript.js"></script>
+<script src="/static/baidumindmap/codemirror/mode/css/css.js"></script>
+<script src="/static/baidumindmap/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="/static/baidumindmap/codemirror/mode/markdown/markdown.js"></script>
+<script src="/static/baidumindmap/codemirror/addon/mode/overlay.js"></script>
+<script src="/static/baidumindmap/codemirror/mode/gfm/gfm.js"></script>
+<script src="/static/baidumindmap/angular-ui-codemirror/ui-codemirror.js"></script>
+<script src="/static/baidumindmap/marked/lib/marked.js"></script>
+<script src="/static/baidumindmap/kity/dist/kity.min.js"></script>
+<script src="/static/baidumindmap/hotbox/hotbox.js"></script>
+<script src="/static/baidumindmap/json-diff/json-diff.js"></script>
+<script src="/static/baidumindmap/kityminder-core/dist/kityminder.core.min.js"></script>
+<script src="/static/baidumindmap/color-picker/dist/color-picker.min.js"></script>
+<!-- endbower -->
+
+<script src="/static/baidumindmap/kityminder.editor.min.js"></script>
+
+<script>
+    (function(){
+        var MindMap = {
+            _loadStatus: false,
+            init: function(){
+                var self = this;
+                angular.module('kityminderDemo', ['kityminderEditor'])
+                    .controller('MainController', function($scope) {
+                        $scope.initEditor = function(editor, minder) {
+                            window.editor = editor;
+                            window.minder = minder;
+
+                            self.initHotkey();
+                            self.loadData();
+                        };
+                    });
+            },
+            initHotkey: function() {
+                var self = this;
+                $(document).keydown(function(e) {
+                    if((e.ctrlKey || e.metaKey) && e.which === 83){
+                        e.preventDefault();
+                        $.ajax({
+                            url: "${url}",
+                            dataType: 'json',
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            data: JSON.stringify(window.editor.minder.exportJson()),
+                            type: "POST",
+                            headers: {'X-CSRFToken': self.getCookie('csrftoken')},
+                            success: function(data){window.alert(data['msg'])}
+                        });
+                        return false;
+                    }else if ((e.altKey || e.metaKey) && e.which === 83){
+                        e.preventDefault();
+                        self.exportPNG();
+                        return false;
+                    };
+                });
+            },
+            download: function(url, filename) {
+                var obj = document.createElement('a');
+                obj.href = url;
+                obj.download = filename;
+                obj.dataset.downloadurl = url;
+                document.body.appendChild(obj);
+                obj.click();
+                document.body.removeChild(obj);
+            },
+            exportPNG: function () {
+                var self = this;
+                minder.exportData('png').then(function (data) {
+                    self.download(data, 'export.png');
+                }, function (data){
+                    console.error('export png fail', data);
+                });
+            },
+            loadData: function(){
+                var obj = ${data};
+                if (obj){
+                    minder.importJson(obj);
+                };
+            },
+            getCookie: function (name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        };
+        window.MindMap = MindMap;
+    })();
+    window.MindMap.init();
+</script>
+
+
+</html>

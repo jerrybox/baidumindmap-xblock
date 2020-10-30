@@ -1,0 +1,71 @@
+/* CSS for BaiduMindmapXBlock */
+.baidumindmap_block .baidumindmap_object {
+    border: none;
+}
+
+.baidumindmap_block span.setting-input-file {
+    padding-left: 25%;
+    margin-left: 14px;
+    padding-top: 5px;
+}
+
+.baidumindmap_block span.setting-input-file span {
+    font-weight: bold;
+}
+
+.baidumindmap_block .full-screen-baidumindmap  .baidumindmap_object {
+    position: fixed;
+    border: none;
+    overflow: hidden;
+    top: 55px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 65px);
+    z-index: 10000;
+}
+
+.baidumindmap_block .full-screen-baidumindmap {
+    position: fixed;
+    border: none;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    background-color: #ffffff;
+}
+
+.baidumindmap_block .baidumindmap_button {
+    padding-bottom: 10px;
+    float: right;
+}
+
+.baidumindmap_block .baidumindmap_display_name {
+    padding-bottom: 10px;
+    float: left;
+}
+
+.baidumindmap_block .full-screen-baidumindmap .baidumindmap_button {
+    padding: 20px;
+}
+
+.baidumindmap_block .full-screen-baidumindmap .baidumindmap_display_name {
+    padding: 20px;
+}
+
+.baidumindmap_block .full-screen-off {
+    display: none;
+}
+
+.baidumindmap_block .full-screen-baidumindmap .full-screen-off {
+    display: block;
+}
+
+.baidumindmap_block .full-screen-baidumindmap .full-screen-on {
+    display: none;
+}
