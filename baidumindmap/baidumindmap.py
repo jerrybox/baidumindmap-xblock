@@ -64,6 +64,11 @@ class BaiduMindmapXBlock(XBlock):
             }
         """
     )
+    img_url = String(
+        display_name=_("Download Url"),
+        help=_("Mindmap image download url"),
+        scope=Scope.settings,
+    )
 
     has_author_view = True
 
@@ -92,8 +97,16 @@ class BaiduMindmapXBlock(XBlock):
             "field_width": self.fields["width"],
             "field_height": self.fields["height"],
             "field_map": self.fields["json_data"],
+            "field_img_url": self.fields["img_url"],
             "baidumindmap_xblock": self,
         }
+
+    @staticmethod
+    def img_url_validate(url):
+        if not url.startswith('http://') and not url.startswith('https://'):
+            return 'https://' + url
+        else:
+            return url
 
     def studio_view(self, context=None):
         """
@@ -116,6 +129,7 @@ class BaiduMindmapXBlock(XBlock):
         self.display_name = request.params["display_name"]
         self.width = request.params["width"]
         self.height = request.params["height"]
+        self.img_url = self.img_url_validate(request.params["img_url"])
         # self.json_data = request.params["json_data"]
         response = {"result": "success", "errors": []}
         return self.json_response(response)
@@ -157,8 +171,9 @@ class BaiduMindmapXBlock(XBlock):
         """
         lms视图
         """
-        html = self.resource_string("static/html/student.html")
-        frag = Fragment(html.format(display_name=self.display_name, height=self.height, width=self.width))
+        template = "static/html/student_download.html" if bool(self.img_url) else "static/html/student.html"
+        html = self.resource_string(template)
+        frag = Fragment(html.format(display_name=self.display_name, height=self.height, width=self.width, img_url=self.img_url))
         frag.add_css(self.resource_string("static/css/baidumindmap.css"))
         frag.add_javascript(self.resource_string("static/js/src/student.js"))
         frag.initialize_js('BaiduMindmapStudentXBlock')

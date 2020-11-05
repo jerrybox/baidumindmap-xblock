@@ -7,12 +7,12 @@
 
 1. python环境下安装
     - 打包与安装
-    ```
+    ```sh
     python setup.py bdist_wheel
     pip install --no-deps package.whl
     ```
     - 配置跨域资源白名单
-    ```
+    ```sh
         sudo vim /edx/app/edxapp/lms.env.json +/ENABLE_CORS_HEADERS  
         sudo vim /edx/app/edxapp/lms.env.json +/CORS_ORIGIN_ALLOW_ALL
         sudo vim /edx/app/edxapp/lms.env.json +/CORS_ORIGIN_WHITELIST

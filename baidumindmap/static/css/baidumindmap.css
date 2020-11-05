@@ -69,3 +69,7 @@
 .baidumindmap_block .full-screen-baidumindmap .full-screen-on {
     display: none;
 }
+
+.baidumindmap_block .full-screen-baidumindmap .js-button-download {
+    display: none;
+}

@@ -5,6 +5,6 @@ function BaiduMindmapStudentXBlock (runtime, element) {
 
     var $baidumindmapBlock = $(".js-baidumindmap-block", element);
     $('.js-button-full-screen', element).on( "click", function() {
-      $baidumindmapBlock.toggleClass("full-screen-baidumindmap");
+        $baidumindmapBlock.toggleClass("full-screen-baidumindmap");
     });
 };
