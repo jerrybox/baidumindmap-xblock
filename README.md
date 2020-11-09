@@ -10,6 +10,8 @@
     ```sh
     python setup.py bdist_wheel
     pip install --no-deps package.whl
+    
+    pip install -e baidumindmap  # --editable 这种方式安装在当前目录下，便于调试
     ```
     - 配置跨域资源白名单
     ```sh

@@ -67,6 +67,7 @@ class BaiduMindmapXBlock(XBlock):
     img_url = String(
         display_name=_("Download Url"),
         help=_("Mindmap image download url"),
+        default="",
         scope=Scope.settings,
     )
 
@@ -103,7 +104,7 @@ class BaiduMindmapXBlock(XBlock):
 
     @staticmethod
     def img_url_validate(url):
-        if not url.startswith('http://') and not url.startswith('https://'):
+        if url and not url.startswith('http://') and not url.startswith('https://'):
             return 'https://' + url
         else:
             return url
