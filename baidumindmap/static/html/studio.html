@@ -25,14 +25,21 @@
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
-        <label class="label setting-label" for="height">{% trans field_img_url.display_name %}</label>
+        <label class="label setting-label" for="offset">{% trans field_offset.display_name %}</label>
+        <input class="input setting-input" name="offset" id="offset" value="{{ baidumindmap_xblock.offset }}" type="number" />
+      </div>
+      <span class="tip setting-help">{% trans field_offset.help %}</span>
+    </li>
+    <li class="field comp-setting-entry is-set">
+      <div class="wrapper-comp-setting">
+        <label class="label setting-label" for="img_url">{% trans field_img_url.display_name %}</label>
         <input class="input setting-input" name="img_url" id="img_url" value="{{ baidumindmap_xblock.img_url }}" type="text" />
       </div>
       <span class="tip setting-help">{% trans field_img_url.help %}</span>
     </li>
     <li class="field comp-setting-entry is-set">
       <div class="wrapper-comp-setting">
-        <label class="label setting-label" for="height">{% trans field_map.display_name %}</label>
+        <label class="label setting-label" for="json_data">{% trans field_map.display_name %}</label>
           <textarea class="input setting-input" name="json_data" id="json_data" style="height: 300px;width: 500px;resize: none;">
               {{ baidumindmap_xblock.json_data }}
           </textarea>

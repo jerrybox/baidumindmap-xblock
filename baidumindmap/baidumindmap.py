@@ -42,6 +42,12 @@ class BaiduMindmapXBlock(XBlock):
         default=450,
         scope=Scope.settings,
     )
+    offset = Integer(
+        display_name=_("View Offset (px)"),
+        help=_("Move view left(+) or right(-)"),
+        default=0,
+        scope=Scope.settings,
+    )
     json_data = String(
         display_name="Map Data JSON",
         help="Mindmap source json data",
@@ -97,6 +103,7 @@ class BaiduMindmapXBlock(XBlock):
             "field_display_name": self.fields["display_name"],
             "field_width": self.fields["width"],
             "field_height": self.fields["height"],
+            "field_offset": self.fields["offset"],
             "field_map": self.fields["json_data"],
             "field_img_url": self.fields["img_url"],
             "baidumindmap_xblock": self,
@@ -130,6 +137,7 @@ class BaiduMindmapXBlock(XBlock):
         self.display_name = request.params["display_name"]
         self.width = request.params["width"]
         self.height = request.params["height"]
+        self.offset = request.params["offset"]
         self.img_url = self.img_url_validate(request.params["img_url"])
         # self.json_data = request.params["json_data"]
         response = {"result": "success", "errors": []}
@@ -174,7 +182,10 @@ class BaiduMindmapXBlock(XBlock):
         """
         template = "static/html/student_download.html" if bool(self.img_url) else "static/html/student.html"
         html = self.resource_string(template)
-        frag = Fragment(html.format(display_name=self.display_name, height=self.height, width=self.width, img_url=self.img_url))
+        frag = Fragment(html.format(display_name=self.display_name,
+                                    height=self.height,
+                                    width=self.width,
+                                    img_url=self.img_url,))
         frag.add_css(self.resource_string("static/css/baidumindmap.css"))
         frag.add_javascript(self.resource_string("static/js/src/student.js"))
         frag.initialize_js('BaiduMindmapStudentXBlock')
@@ -186,5 +197,5 @@ class BaiduMindmapXBlock(XBlock):
         lms视图
         """
         html = self.resource_string("static/html/map.html")
-        content = MakoTemplate(html).render(data=self.json_data)
+        content = MakoTemplate(html).render(data=self.json_data, offset=self.offset)
         return self.html_response(content)
