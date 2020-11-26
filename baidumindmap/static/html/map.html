@@ -40,14 +40,46 @@
                 var km = new kityminder.Minder();
                 window.km = km;
                 window.km.setup(target);
+                window.km.size = 100;
             },
-            move: function(number) {
-                setTimeout(function(){km.getViewDragger().move(new kity.Point(number, 0));}, 500);
+            initHotkey: function(){
+                var scrollFunc = function (e) {
+                    e = e || window.event;
+                    if (e.stopPropagation) e.stopPropagation();
+                    else e.cancelBubble = true;
+                    if (e.preventDefault) e.preventDefault();
+                    else e.returnValue = false;
+
+                    if (e.ctrlKey && e.wheelDelta) {  //判断浏览器IE，谷歌滑轮事件
+                        if (e.wheelDelta > 0) { //当滑轮向上滚动时
+                            window.km.size += 10;
+                        }
+                        if (e.wheelDelta < 0) { //当滑轮向下滚动时
+                            window.km.size -= 10;
+                        }
+                    } else if (e.ctrlKey && e.detail) {  //Firefox滑轮事件
+                        if (e.detail > 0) { //当滑轮向上滚动时
+                            window.km.size += 10;
+                        }
+                        if (e.detail < 0) { //当滑轮向下滚动时
+                            window.km.size -= 10;
+                        }
+                    }
+                    window.km.execCommand('Zoom', window.km.size);
+                };
+                if (document.addEventListener) { //火狐使用DOMMouseScroll绑定
+                    document.addEventListener('DOMMouseScroll', scrollFunc, false);
+                }
+                window.onmousewheel = document.onmousewheel = scrollFunc;
+            },
+            move: function(num){
+                setTimeout(function(){km.getViewDragger().move(new kity.Point(num, 0));}, 1000);
             }
         };
         window.MindMap = MindMap;
     })();
     window.MindMap.init('#minder-view');
+    window.MindMap.initHotkey();
     window.MindMap.move(${offset});
 </script>
 
