@@ -36,13 +36,14 @@
     (function(){
         var MindMap = {
             init: function(target){
-                var self = this;
-                var km = new kityminder.Minder();
-                window.km = km;
+                window.km = new kityminder.Minder();
                 window.km.setup(target);
                 window.km.size = 100;
             },
             initHotkey: function(){
+                var self = this;
+
+                // 放大缩小
                 var scrollFunc = function (e) {
                     e = e || window.event;
                     if (e.stopPropagation) e.stopPropagation();
@@ -67,10 +68,43 @@
                     }
                     window.km.execCommand('Zoom', window.km.size);
                 };
+
+                // 导出图片
+                var exportFunc = function(e) {
+                    e = e || window.event;
+                    if (e.stopPropagation) e.stopPropagation();
+                    else e.cancelBubble = true;
+                    if (e.preventDefault) e.preventDefault();
+                    else e.returnValue = false;
+
+                    if((e.ctrlKey || e.metaKey) && e.which === 83){
+                        self.exportPNG();
+                    };
+                };
+
                 if (document.addEventListener) { //火狐使用DOMMouseScroll绑定
                     document.addEventListener('DOMMouseScroll', scrollFunc, false);
                 }
                 window.onmousewheel = document.onmousewheel = scrollFunc;
+                window.onkeydown  = document.onkeydown = exportFunc;
+            },
+            download: function(url, filename) {
+                var obj = document.createElement('a');
+                obj.href = url;
+                obj.download = filename;
+                obj.dataset.downloadurl = url;
+                document.body.appendChild(obj);
+                obj.click();
+                document.body.removeChild(obj);
+            },
+            exportPNG: function () {
+                var self = this;
+                var display_name = "${display_name}";
+                window.km.exportData('png').then(function (data) {
+                    self.download(data, display_name);
+                }, function (data){
+                    console.error('export png fail', data);
+                });
             },
             move: function(num){
                 setTimeout(function(){km.getViewDragger().move(new kity.Point(num, 0));}, 1000);

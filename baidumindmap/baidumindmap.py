@@ -197,5 +197,5 @@ class BaiduMindmapXBlock(XBlock):
         lms视图
         """
         html = self.resource_string("static/html/map.html")
-        content = MakoTemplate(html).render(data=self.json_data, offset=self.offset)
+        content = MakoTemplate(html).render(display_name=self.display_name, data=self.json_data, offset=self.offset)
         return self.html_response(content)
